@@ -3,6 +3,8 @@ package araujo.raynan.galeria.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,16 +26,30 @@ public class MyAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        MyItem myItem = itens.get(position);
 
-    }
+        View v = holder.itemView;
 
-    @Override
-    public int getItemCount() {
-        return 0;
+        ImageView imvfoto = v.findViewById(R.id.imvPhoto);
+        imvfoto.setImageURI(myItem.photo);
+
+        TextView tvTitle = v.findViewById(R.id.tvTitle);
+        tvTitle.setText(myItem.title);
+
+        TextView tvdesc = v.findViewById(R.id.tvDesc);
+        tvdesc.setText(myItem.description);
     }
 
     MainActivity mainActivity;
     List<MyItem> itens;
+
+    @Override
+    public int getItemCount() {
+
+        return itens.size();
+    }
+
+
 
     public  MyAdapter(MainActivity mainActivity, List<MyItem> itens){
         this.mainActivity = mainActivity;
