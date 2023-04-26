@@ -2,6 +2,7 @@ package araujo.raynan.galeria.activity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,16 +16,25 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import araujo.raynan.galeria.R;
+import araujo.raynan.galeria.model.NewItemActivityViewModel;
 
 public class NewItemActivity extends AppCompatActivity {
 
     static int PHOTO_PICKER_REQUEST = 1;
-    Uri photoSelected = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_item);
+
+        NewItemActivityViewModel vm = new ViewModelProvider(this).get(NewItemActivityViewModel.class);
+
+        Uri selectPhotoLocation = vm.getSelectPhotoLocation();
+        if (selectPhotoLocation != null){
+            ImageView imvfotoPreview = findViewById(R.id.imvPhotoPreview);
+            imvfotoPreview.setImageURI(selectPhotoLocation);
+        }
 
         ImageButton imgCI = findViewById(R.id.imbCI);
         imgCI.setOnClickListener(new View.OnClickListener() {
@@ -40,7 +50,10 @@ public class NewItemActivity extends AppCompatActivity {
         btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(photoSelected == null){
+                NewItemActivityViewModel vm = new ViewModelProvider(NewItemActivity.this).get(NewItemActivityViewModel.class);
+
+                Uri selectPhotoLocation = vm.getSelectPhotoLocation();
+                if(selectPhotoLocation == null){
                     Toast.makeText(NewItemActivity.this, "É necessário selecionar uma imagem!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -58,11 +71,12 @@ public class NewItemActivity extends AppCompatActivity {
                 }
 
                 Intent i = new Intent();
-                i.setData(photoSelected);
+                i.setData(selectPhotoLocation);
                 i.putExtra("title", title);
                 i.putExtra("description", description);
                 setResult(Activity.RESULT_OK, i);
                 finish();
+
             }
         });
     }
@@ -71,9 +85,12 @@ public class NewItemActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == PHOTO_PICKER_REQUEST){
             if(resultCode == Activity.RESULT_OK){
-                photoSelected = data.getData();
+                Uri photoSelected = data.getData();
                 ImageView imvfotoPreview = findViewById(R.id.imvPhotoPreview);
                 imvfotoPreview.setImageURI(photoSelected);
+
+                NewItemActivityViewModel vm = new ViewModelProvider(this).get(NewItemActivityViewModel.class);
+                vm.setSelectPhotoLocation(photoSelected);
             }
         }
     }
