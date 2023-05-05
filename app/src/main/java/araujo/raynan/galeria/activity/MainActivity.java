@@ -29,13 +29,14 @@ public class MainActivity extends AppCompatActivity {
 
     static int NEW_ITEM_REQUEST = 1;
 
+    //declarando arquivo myAdapter
     MyAdapter myAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        /*Capturando o botão e atribuindo  o onClick que cria uma itenção que espera o retorno da activity chamada*/
         FloatingActionButton fabAddItem = findViewById(R.id.fabAddNewItem);
         fabAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,15 +47,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         RecyclerView rvItens = findViewById(R.id.rvItens);
-
+        // Adiciona um novo ViewModel  de MainActivityViewModel item a lista 'itens'
         MainActivityViewModel vm = new ViewModelProvider(this).get(MainActivityViewModel.class);
         List<MyItem> itens = vm.getItens();
 
+        //Criando um novo myAdapter passando itens como parâmetro e setando no rvItens
         myAdapter = new MyAdapter(this, itens);
         rvItens.setAdapter(myAdapter);
 
+        //define o tamanho como fixo
         rvItens.setHasFixedSize(true);
 
+        //posiciona o layout de maniera vertical
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         rvItens.setLayoutManager(layoutManager);
 
@@ -65,13 +69,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
+        //verifica se o resultado é referente a esta aplicação e confere se o resultado foi OK
         if(requestCode == NEW_ITEM_REQUEST){
             if(resultCode == Activity.RESULT_OK){
+                //criando um myItem e preenchendo-o
                 MyItem myItem = new MyItem();
                 myItem.title = data.getStringExtra("title");
                 myItem.description = data.getStringExtra("description");
                 Uri selectedPhotoURI = data.getData();
 
+                //tenta transformar a imagem em bitmap
                 try {
                     Bitmap photo = Util.getBitmap(MainActivity.this, selectedPhotoURI, 100, 100);
                     myItem.photo = photo;
@@ -79,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+                //Salva e adiciona um novo item
                 MainActivityViewModel vm = new ViewModelProvider(this).get(MainActivityViewModel.class);
                 List<MyItem> itens = vm.getItens();
 

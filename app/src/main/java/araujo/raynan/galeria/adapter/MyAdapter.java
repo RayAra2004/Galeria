@@ -23,7 +23,7 @@ public class MyAdapter extends RecyclerView.Adapter {
         View v = inflater.inflate(R.layout.item_list, parent, false);
         return new MyViewHolder(v);
     }
-
+    //vinculando informações ao objeto que chamou a função
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         MyItem myItem = itens.get(position);
@@ -50,7 +50,7 @@ public class MyAdapter extends RecyclerView.Adapter {
     }
 
 
-
+    //preenchendo as informações
     public  MyAdapter(MainActivity mainActivity, List<MyItem> itens){
         this.mainActivity = mainActivity;
         this.itens = itens;
